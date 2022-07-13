@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
     UserDto createUser(UserDto user);
-    List<UserRest> findAll();
+    Iterable<UserDto> findAll();
     UserDto getUserByUserId(String id);
 }

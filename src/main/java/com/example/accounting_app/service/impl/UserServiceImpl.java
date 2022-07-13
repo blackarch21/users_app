@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -48,10 +49,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRest> findAll() {
+    public Iterable<UserDto> findAll() {
         Iterable<UserEntity> entities =userRepository.findAll();
-        List<UserRest> returnValue = new ArrayList<>();
-        BeanUtils.copyProperties(entities,returnValue);
+        List<UserDto> returnValue = new ArrayList<>();
+        UserDto tempUsers = new UserDto();
+        for(UserEntity temp: entities){
+            BeanUtils.copyProperties(temp,tempUsers);
+            returnValue.add(tempUsers);
+        }
+
         return returnValue;
     }
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,8 +23,15 @@ public class UserController {
 
 
     @GetMapping
-    public List<UserRest> getUsers(){
-        return userService.findAll();
+    public Iterable<UserRest> getUsers(){
+        Iterable<UserDto> userDtos = userService.findAll();
+        UserRest tempUser= new UserRest();
+        List<UserRest> returnValue = new ArrayList<>();
+        for(UserDto temp: userDtos){
+            BeanUtils.copyProperties(temp,tempUser);
+            returnValue.add(tempUser);
+        }
+        return returnValue;
     }
 
     @GetMapping(path = "/{userid}")
