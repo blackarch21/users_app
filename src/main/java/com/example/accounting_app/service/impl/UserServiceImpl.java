@@ -5,6 +5,7 @@ import com.example.accounting_app.repository.UserRepository;
 import com.example.accounting_app.service.UserService;
 import com.example.accounting_app.shared.Utils;
 import com.example.accounting_app.shared.dto.UserDto;
+import com.example.accounting_app.ui.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,6 +44,23 @@ public class UserServiceImpl implements UserService {
 
         UserEntity createdValue=userRepository.save(userEntity);
         BeanUtils.copyProperties(createdValue, returnValue);
+        return returnValue;
+    }
+
+    @Override
+    public List<UserRest> findAll() {
+        Iterable<UserEntity> entities =userRepository.findAll();
+        List<UserRest> returnValue = new ArrayList<>();
+        BeanUtils.copyProperties(entities,returnValue);
+        return returnValue;
+    }
+
+    @Override
+    public UserDto getUserByUserId(String id) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity= userRepository.findByUserid(id);
+        if(userEntity == null)throw new UsernameNotFoundException(id);
+        BeanUtils.copyProperties(userEntity,returnValue);
         return returnValue;
     }
 

@@ -43,13 +43,11 @@ public class WebSecurity {
 
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();
     }
-
 
 }
 

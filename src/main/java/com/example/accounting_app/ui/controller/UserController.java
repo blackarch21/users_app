@@ -6,7 +6,12 @@ import com.example.accounting_app.ui.request.UserDetailsRequestModel;
 import com.example.accounting_app.ui.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 @RequestMapping("users")
@@ -15,10 +20,21 @@ public class UserController {
     @Autowired
     UserService userService;
 
+
     @GetMapping
-    public String getUser(){
-        return "Get user was called";
+    public List<UserRest> getUsers(){
+        return userService.findAll();
     }
+
+    @GetMapping(path = "/{userid}")
+    public UserRest getUserByUserId(@PathVariable String userid){
+        UserRest returnValue = new UserRest();
+        UserDto userDto= userService.getUserByUserId(userid);
+        BeanUtils.copyProperties(userDto,returnValue);
+        return returnValue;
+
+    }
+
 
     @PostMapping
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
