@@ -1,6 +1,5 @@
 package com.example.accounting_app.shared;
 
-import org.springframework.jdbc.core.SqlReturnType;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

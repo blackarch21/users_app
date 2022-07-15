@@ -5,7 +5,7 @@ import com.example.accounting_app.repository.UserRepository;
 import com.example.accounting_app.service.UserService;
 import com.example.accounting_app.shared.Utils;
 import com.example.accounting_app.shared.dto.UserDto;
-import com.example.accounting_app.ui.response.UserRest;
+import com.example.accounting_app.ui.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -33,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto user) {
 
-        if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Alredy exists");
+        if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException(ErrorMessages.RECORD_ALREDY_EXISTS.getErrorMessage());
         UserDto returnValue = new UserDto();
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(user, userEntity);

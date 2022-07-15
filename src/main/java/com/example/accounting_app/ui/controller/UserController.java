@@ -1,17 +1,16 @@
 package com.example.accounting_app.ui.controller;
 
+import com.example.accounting_app.exceptions.UserServiceExceptions;
 import com.example.accounting_app.service.UserService;
 import com.example.accounting_app.shared.dto.UserDto;
 import com.example.accounting_app.ui.request.UserDetailsRequestModel;
+import com.example.accounting_app.ui.response.ErrorMessages;
 import com.example.accounting_app.ui.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -48,6 +47,7 @@ public class UserController {
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
         UserRest returnValue = new UserRest();
 
+        if(userDetails.getFirstname().isEmpty())throw new UserServiceExceptions(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);
 
