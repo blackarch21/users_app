@@ -4,7 +4,8 @@ public enum ErrorMessages {
 
     MISSING_REQUIRED_FIELD("Missing required field please check documentation"),
     RECORD_ALREDY_EXISTS("Record alredy exists"),
-    INTERNAL_SERVER_ERROR("internal server error");
+    INTERNAL_SERVER_ERROR("internal server error"),
+    RECORD_NOT_FOUND("No user id found");
 
     private String errorMessage;
 
