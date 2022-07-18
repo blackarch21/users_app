@@ -1,10 +1,8 @@
 package com.example.accounting_app.io.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "users")
 public class UserEntity implements Serializable {
@@ -29,6 +27,9 @@ public class UserEntity implements Serializable {
 
     @Column(nullable = false)
     private String encryptedPassword;
+
+    @OneToMany(mappedBy = "userDetails",cascade = CascadeType.ALL)
+    private List<AddressEntity> address;
 
     private String emailVerificationToken;
     private Boolean emailVerificationStatus;
@@ -79,6 +80,14 @@ public class UserEntity implements Serializable {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
+    }
+
+    public List<AddressEntity> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<AddressEntity> address) {
+        this.address = address;
     }
 
     public String getEmailVerificationToken() {

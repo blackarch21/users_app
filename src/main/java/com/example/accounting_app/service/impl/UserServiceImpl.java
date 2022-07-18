@@ -5,8 +5,10 @@ import com.example.accounting_app.io.entity.UserEntity;
 import com.example.accounting_app.repository.UserRepository;
 import com.example.accounting_app.service.UserService;
 import com.example.accounting_app.shared.Utils;
+import com.example.accounting_app.shared.dto.AddressDto;
 import com.example.accounting_app.shared.dto.UserDto;
 import com.example.accounting_app.ui.response.ErrorMessages;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,12 +37,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto user) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        for (int i = 0; i < user.getAddress().size(); i++) {
+            AddressDto addressDto = user.getAddress().get(i);
+            addressDto.setUserDetails(user);
+            addressDto.setAddressId(utils.generateAddressId(20));
+            user.getAddress().set(i, addressDto);
+
+        }
 
         if (userRepository.findByEmail(user.getEmail()) != null)
             throw new RuntimeException(ErrorMessages.RECORD_ALREDY_EXISTS.getErrorMessage());
-        UserDto returnValue = new UserDto();
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user, userEntity);
+        UserEntity userEntity = modelMapper.map(user, UserEntity.class);
+//        BeanUtils.copyProperties(user, userEntity);
 
         String publicUserId = "LE-" + utils.generateUserId(30);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -48,7 +58,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setEmailVerificationStatus(false);
 
         UserEntity createdValue = userRepository.save(userEntity);
-        BeanUtils.copyProperties(createdValue, returnValue);
+        UserDto returnValue = modelMapper.map(createdValue, UserDto.class);
         return returnValue;
     }
 
@@ -56,14 +66,14 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getUsers(int page, int limit) {
         List<UserDto> returnValue = new ArrayList<>();
 
-        org.springframework.data.domain.Pageable pageable = PageRequest.of(page,limit);
+        org.springframework.data.domain.Pageable pageable = PageRequest.of(page, limit);
         Page<UserEntity> usersPage = userRepository.findAll(pageable);
 
         List<UserEntity> userEntities = usersPage.getContent();
 
-        for (UserEntity tempUser: userEntities){
+        for (UserEntity tempUser : userEntities) {
             UserDto tempUserDto = new UserDto();
-            BeanUtils.copyProperties(tempUser,tempUserDto);
+            BeanUtils.copyProperties(tempUser, tempUserDto);
             returnValue.add(tempUserDto);
         }
         return returnValue;

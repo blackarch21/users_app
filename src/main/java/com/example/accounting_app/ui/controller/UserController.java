@@ -8,6 +8,7 @@ import com.example.accounting_app.ui.response.ErrorMessages;
 import com.example.accounting_app.ui.response.OperationStatusModel;
 import com.example.accounting_app.ui.response.RequestOperationStatus;
 import com.example.accounting_app.ui.response.UserRest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,10 @@ public class UserController {
 
     @GetMapping
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
-                                   @RequestParam(value = "limit", defaultValue = "25") int limit ) {
+                                   @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
         List<UserRest> returnValue = new ArrayList<>();
-        List<UserDto> userDtos = userService.getUsers(page,limit);
+        List<UserDto> userDtos = userService.getUsers(page, limit);
         for (UserDto user : userDtos) {
             UserRest tempUser = new UserRest();
             BeanUtils.copyProperties(user, tempUser);
@@ -49,15 +50,15 @@ public class UserController {
 
     @PostMapping
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
-        UserRest returnValue = new UserRest();
+        ModelMapper modelMapper = new ModelMapper();
 
         if (userDetails.getFirstname().isEmpty())
             throw new UserServiceExceptions(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+//        BeanUtils.copyProperties(userDetails, userDto);
 
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser, returnValue);
+        UserRest returnValue = modelMapper.map(createdUser, UserRest.class);
         return returnValue;
     }
 
@@ -76,7 +77,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{userid}")
-    public OperationStatusModel deleteUser(@PathVariable String userid){
+    public OperationStatusModel deleteUser(@PathVariable String userid) {
 
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());

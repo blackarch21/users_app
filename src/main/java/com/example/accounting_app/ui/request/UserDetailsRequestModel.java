@@ -1,10 +1,13 @@
 package com.example.accounting_app.ui.request;
 
+import java.util.List;
+
 public class UserDetailsRequestModel {
     private String firstname;
     private String lastname;
     private String email;
     private String password;
+    private List<AddressDetailsRequestModel> address;
 
     public String getFirstname() {
         return firstname;
@@ -36,5 +39,13 @@ public class UserDetailsRequestModel {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<AddressDetailsRequestModel> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<AddressDetailsRequestModel> address) {
+        this.address = address;
     }
 }

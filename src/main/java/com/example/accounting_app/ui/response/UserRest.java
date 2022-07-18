@@ -1,10 +1,13 @@
 package com.example.accounting_app.ui.response;
 
+import java.util.List;
+
 public class UserRest {
     private String userid;
     private String firstname;
     private String lastname;
     private String email;
+    private List<AddressRest> address;
 
     public String getUserid() {
         return userid;
@@ -36,5 +39,13 @@ public class UserRest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<AddressRest> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<AddressRest> address) {
+        this.address = address;
     }
 }
