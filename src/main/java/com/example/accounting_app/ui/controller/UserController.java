@@ -1,18 +1,20 @@
 package com.example.accounting_app.ui.controller;
 
 import com.example.accounting_app.exceptions.UserServiceExceptions;
+import com.example.accounting_app.service.AddressService;
 import com.example.accounting_app.service.UserService;
+import com.example.accounting_app.shared.dto.AddressDto;
 import com.example.accounting_app.shared.dto.UserDto;
+import com.example.accounting_app.ui.RequestOperationName;
 import com.example.accounting_app.ui.request.UserDetailsRequestModel;
-import com.example.accounting_app.ui.response.ErrorMessages;
-import com.example.accounting_app.ui.response.OperationStatusModel;
-import com.example.accounting_app.ui.response.RequestOperationStatus;
-import com.example.accounting_app.ui.response.UserRest;
+import com.example.accounting_app.ui.response.*;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AddressService addressService;
 
 
     @GetMapping
@@ -89,4 +94,28 @@ public class UserController {
         return returnValue;
 
     }
+
+    @GetMapping(path = "/{userid}/address")
+    public List<AddressRest> getUserAddress(@PathVariable String userid) {
+        ModelMapper modelMapper = new ModelMapper();
+        List<AddressDto> addressDto = addressService.getAddress(userid);
+        List<AddressRest> returnValue=new ArrayList<>();
+
+        if(addressDto != null && !addressDto.isEmpty()){
+            Type listType = new TypeToken<List<AddressRest>>() {}.getType();
+            returnValue = modelMapper.map(addressDto, listType);
+        }
+
+        return returnValue;
+
+    }
+
+    @GetMapping(path = "/{userid}/address/{addressId}")
+    public AddressRest findByAddressId(@PathVariable String addressId){
+        AddressDto addressDto= addressService.findByAddressId(addressId);
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(addressDto, AddressRest.class);
+
+    }
+
 }
