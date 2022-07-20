@@ -28,6 +28,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.1'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
+    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.5.1'
 }
 
 tasks.named('test') {

@@ -82,10 +82,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUserId(String id) {
-        UserDto returnValue = new UserDto();
+        ModelMapper modelMapper =new ModelMapper();
+
         UserEntity userEntity = userRepository.findByUserid(id);
         if (userEntity == null) throw new UserServiceExceptions(ErrorMessages.RECORD_NOT_FOUND.getErrorMessage());
-        BeanUtils.copyProperties(userEntity, returnValue);
+        UserDto returnValue = modelMapper.map(userEntity, UserDto.class);
         return returnValue;
     }
 
