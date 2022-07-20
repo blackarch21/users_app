@@ -75,7 +75,6 @@ public class UserController {
     public UserRest updateUser(@PathVariable String userid, @RequestBody UserDetailsRequestModel userDetails) {
         ModelMapper modelMapper = new ModelMapper();
 
-
         if (userDetails.getFirstname().isEmpty())
             throw new UserServiceExceptions(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
@@ -92,6 +91,20 @@ public class UserController {
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
         userService.deleteUser(userid);
+
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+
+        return returnValue;
+
+    }
+
+    @DeleteMapping(path = "{userid}/address/{addressId}")
+    public OperationStatusModel deleteAddress(@PathVariable String addressId) {
+
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name());
+
+        addressService.deleteAddress(addressId);
 
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
 

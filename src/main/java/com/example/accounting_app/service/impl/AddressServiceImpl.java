@@ -46,4 +46,11 @@ public class AddressServiceImpl implements AddressService {
         }
         return returnValue;
     }
+
+    @Override
+    public void deleteAddress(String id) {
+        AddressEntity address = addressRepository.findByAddressId(id);
+        if(address == null) throw new RuntimeException();
+        addressRepository.delete(address);
+    }
 }

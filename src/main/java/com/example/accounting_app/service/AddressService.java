@@ -8,4 +8,5 @@ public interface AddressService {
 
     List<AddressDto> getAddress(String userId);
     AddressDto findByAddressId(String addressId);
+    void deleteAddress(String id);
 }
