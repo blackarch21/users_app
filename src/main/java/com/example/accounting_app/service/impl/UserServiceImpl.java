@@ -65,15 +65,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsers(int page, int limit) {
         List<UserDto> returnValue = new ArrayList<>();
-
+        ModelMapper modelMapper = new ModelMapper();
         org.springframework.data.domain.Pageable pageable = PageRequest.of(page, limit);
         Page<UserEntity> usersPage = userRepository.findAll(pageable);
 
         List<UserEntity> userEntities = usersPage.getContent();
 
         for (UserEntity tempUser : userEntities) {
-            UserDto tempUserDto = new UserDto();
-            BeanUtils.copyProperties(tempUser, tempUserDto);
+            UserDto tempUserDto = modelMapper.map(tempUser, UserDto.class);
             returnValue.add(tempUserDto);
         }
         return returnValue;
@@ -92,16 +91,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto user, String userid) {
-        UserDto returnValue = new UserDto();
+
         UserEntity userEntity = userRepository.findByUserid(userid);
+        ModelMapper modelMapper = new ModelMapper();
 
         if (userEntity == null) throw new UserServiceExceptions(ErrorMessages.RECORD_NOT_FOUND.getErrorMessage());
+
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userEntity.setFirstname(user.getFirstname());
         userEntity.setLastname(user.getLastname());
 
         UserEntity updatedUserDetails = userRepository.save(userEntity);
-        BeanUtils.copyProperties(updatedUserDetails, returnValue);
+        UserDto returnValue=modelMapper.map(updatedUserDetails, UserDto.class);
 
         return returnValue;
     }

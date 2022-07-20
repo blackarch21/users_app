@@ -10,7 +10,6 @@ import com.example.accounting_app.ui.request.UserDetailsRequestModel;
 import com.example.accounting_app.ui.response.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -38,11 +36,11 @@ public class UserController {
     @GetMapping
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
+        ModelMapper modelMapper = new ModelMapper();
         List<UserRest> returnValue = new ArrayList<>();
         List<UserDto> userDtos = userService.getUsers(page, limit);
         for (UserDto user : userDtos) {
-            UserRest tempUser = new UserRest();
-            BeanUtils.copyProperties(user, tempUser);
+            UserRest tempUser = modelMapper.map(user, UserRest.class);
             returnValue.add(tempUser);
         }
         return returnValue;
@@ -75,16 +73,15 @@ public class UserController {
 
     @PutMapping(path = "/{userid}")
     public UserRest updateUser(@PathVariable String userid, @RequestBody UserDetailsRequestModel userDetails) {
+        ModelMapper modelMapper = new ModelMapper();
 
-        UserRest returnValue = new UserRest();
 
         if (userDetails.getFirstname().isEmpty())
             throw new UserServiceExceptions(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createdUser = userService.updateUser(userDto, userid);
-        BeanUtils.copyProperties(createdUser, returnValue);
+        UserRest returnValue = modelMapper.map(createdUser, UserRest.class);
         return returnValue;
     }
 
