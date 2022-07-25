@@ -155,4 +155,18 @@ public class UserController {
 
     }
 
+    @PutMapping(path = "/{userid}/address/{addressId}")
+    public AddressRest updateAddress(@RequestBody AddressRest addressRest, @PathVariable String addressId) throws Exception {
+        ModelMapper modelMapper = new ModelMapper();
+
+        if(addressRest.getAddressId() != null)throw new RuntimeException();
+        AddressDto addressDto = modelMapper.map(addressRest, AddressDto.class);
+
+        AddressDto updatedAddress= addressService.updateAddress(addressDto,addressId);
+        AddressRest returnValue = modelMapper.map(updatedAddress, AddressRest.class);
+
+        return returnValue;
+
+    }
+
 }
